@@ -7,6 +7,7 @@ MT::MT() {
 	alphabet = "";
 	rules = nullptr;
 	count_rules = 0;
+	count_spaces = 1;
 }
 
 void MT::addRule(size_t condition, char read, size_t condition_next, char write, Command command) {
@@ -38,6 +39,8 @@ bool MT::ruleIsExist(size_t condition, char read, size_t condition_next, char wr
 void MT::generateRandLenta(int length, int numSpaces)
 {
 	lenta = "";
+	srand(time(0));
+
 	for (int i = 0; i < numSpaces; i++)
 		lenta.push_back('_');
 	for (int i = 0; i < length;i++) {
@@ -51,7 +54,7 @@ void MT::generateRandLenta(int length, int numSpaces)
 
 char MT::randLetterFromAlphabet()
 {
-	srand(time(0)%100);
+	
 	if(alphabet.size())
 		return alphabet[rand()%alphabet.size()];
 	else return '_';
@@ -124,37 +127,44 @@ void MT::printRules()
 	}
 }
 
-void MT::work(std::string lenta4)
+bool MT::work(std::string lenta4)
 {
 	if (lenta4 != "")
 		lenta = lenta4;
-	//lenta = "__0101__";
+	
 	int currpos = count_spaces;
 	int currcond = 0;
 	while (true) {
-		Rule r = getNextState(currcond, lenta[currpos]);
-		currcond = r.condition_next;
-		lenta[currpos] = r.write;
-		
-		switch (r.command)
-		{
-		case L:
-			currpos -= 1;
-			break;
-		case E:
-			currpos = currpos;
-			break;
-		case R:
-			currpos += 1;
-			break;
+		if(currpos<lenta.size()&&currpos>=0){
+			std::cout <<"q"<<currcond;
+			Rule r = getNextState(currcond, lenta[currpos]);
+			currcond = r.condition_next;
+			lenta[currpos] = r.write;
+
+			switch (r.command)
+			{
+			case L:
+				currpos -= 1;
+				std::cout << "L:";
+				break;
+			case E:
+				currpos = currpos;
+				std::cout << "E:";
+				break;
+			case R:
+				currpos += 1;
+				std::cout << "R:";
+				break;
+			}
+			std::cout << "(" << currpos << ")";
+			printLenta();
+			if (currcond == -1)
+				return true;
 		}
-		
-		printLenta();
-		if (currcond == -1)
-			break;
+		else {
+			return false;
+		}
 	}
-
-
 }
 
 Rule MT::getNextState(int currentState, char currentSymbol)
@@ -170,3 +180,4 @@ MT::~MT() {
 }
 
 //Q0 1 ->Q1 1 R
+//01 

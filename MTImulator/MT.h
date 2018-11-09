@@ -28,7 +28,7 @@ public:
 	bool readRulesFromFile(std::string filename);
 	void printLenta();
 	void printRules();
-	void work(std::string lenta4="");
+	bool work(std::string lenta4="");
 	Rule getNextState(int cst, char csb);
 	MT();
 	~MT();

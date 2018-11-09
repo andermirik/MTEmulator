@@ -124,6 +124,7 @@
   <ItemGroup>
     <Text Include="syscmd1.txt" />
     <Text Include="syscmd2.txt" />
+    <Text Include="syscmd3.txt" />
   </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
   <ImportGroup Label="ExtensionTargets">

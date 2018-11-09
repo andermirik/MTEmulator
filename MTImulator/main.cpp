@@ -3,10 +3,11 @@
 void main() {
 	MT mt;
 	mt.readRulesFromFile("syscmd2.txt");
-	mt.setAlphabet("1+_V*");
+	mt.setAlphabet("123");
 	mt.printLenta();
 	mt.printRules();
-	mt.work("_1+11+111+1111V111_");	
-
+	//mt.generateRandLenta(9, 1);
+	mt.work("_1+11+111+1111V111_");
+	//mt.work();
 	system("pause");
 }
