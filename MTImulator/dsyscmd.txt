@@ -1,0 +1,6 @@
+0 a _ 0 a a R R
+0 b _ 0 b b R R
+0 _ _ 1 _ _ L E
+1 a _ 1 a _ L E
+1 b _ 1 b _ L E
+1 _ _ -1 _ _ E E

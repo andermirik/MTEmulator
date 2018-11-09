@@ -10,7 +10,7 @@ MT::MT() {
 	count_spaces = 1;
 }
 
-void MT::addRule(size_t condition, char read, size_t condition_next, char write, Command command) {
+void MT::addRule(int condition, char read, int condition_next, char write, Command command) {
 	Rule rule = { condition, read, condition_next, write, command };
 	
 	Rule*new_rules = new Rule[count_rules + 1];
@@ -127,7 +127,7 @@ void MT::printRules()
 	}
 }
 
-bool MT::work(std::string lenta4)
+bool MT::work(bool trace, std::string lenta4)
 {
 	if (lenta4 != "")
 		lenta = lenta4;
@@ -136,7 +136,8 @@ bool MT::work(std::string lenta4)
 	int currcond = 0;
 	while (true) {
 		if(currpos<lenta.size()&&currpos>=0){
-			std::cout <<"q"<<currcond;
+			if(trace)
+				std::cout <<"q"<<currcond;
 			Rule r = getNextState(currcond, lenta[currpos]);
 			currcond = r.condition_next;
 			lenta[currpos] = r.write;
@@ -145,19 +146,24 @@ bool MT::work(std::string lenta4)
 			{
 			case L:
 				currpos -= 1;
-				std::cout << "L:";
+				if(trace)
+					std::cout << "L:";
 				break;
 			case E:
 				currpos = currpos;
-				std::cout << "E:";
+				if(trace)
+					std::cout << "E:";
 				break;
 			case R:
 				currpos += 1;
-				std::cout << "R:";
+				if(trace)
+					std::cout << "R:";
 				break;
 			}
-			std::cout << "(" << currpos << ")";
-			printLenta();
+			if (trace) {
+				std::cout << "(" << currpos << ")";
+				printLenta();
+			}
 			if (currcond == -1)
 				return true;
 		}
@@ -176,7 +182,7 @@ Rule MT::getNextState(int currentState, char currentSymbol)
 }
 
 MT::~MT() {
-	delete rules;
+	delete[] rules;
 }
 
 //Q0 1 ->Q1 1 R

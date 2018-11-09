@@ -115,13 +115,16 @@
     </Link>
   </ItemDefinitionGroup>
   <ItemGroup>
+    <ClInclude Include="DMT.h" />
     <ClInclude Include="MT.h" />
   </ItemGroup>
   <ItemGroup>
+    <ClCompile Include="DMT.cpp" />
     <ClCompile Include="main.cpp" />
     <ClCompile Include="MT.cpp" />
   </ItemGroup>
   <ItemGroup>
+    <Text Include="dsyscmd.txt" />
     <Text Include="syscmd1.txt" />
     <Text Include="syscmd2.txt" />
     <Text Include="syscmd3.txt" />
