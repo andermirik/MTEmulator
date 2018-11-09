@@ -154,21 +154,26 @@ char DMT::randLetterFromAlphabet()
 
 bool DMT::work(bool trace, std::string lenta4)
 {
-	if (lenta4 != "")
+	if (lenta4 != "") {
 		lenta = lenta4;
+		lenta2.clear();
+		for (int i = 0; i < lenta.size(); i++)
+			lenta2.push_back('_');
+	}
 
 	int currpos = count_spaces;
 	int currpos2 = count_spaces;
 	int currcond = 0;
 	while (true) {
-		if (currpos < lenta.size() && currpos >= 0  && currpos2<lenta.size() && currpos >=0) {
+		if (currpos < lenta.size() && currpos >= 0 && currpos2 < lenta.size() && currpos >= 0) {
 			if (trace)
 				std::cout << "q" << currcond;
 			Rule r = getNextState(currcond, lenta[currpos], lenta2[currpos2]);
 			currcond = r.condition_next;
 			lenta[currpos] = r.write;
 			lenta2[currpos2] = r.write2;
-
+			if (trace)
+				std::cout << "(" << currpos << ")";
 			switch (r.command)
 			{
 			case L:
@@ -188,11 +193,11 @@ bool DMT::work(bool trace, std::string lenta4)
 				break;
 			}
 			if (trace) {
-				std::cout << "(" << currpos << ")";
 				printLenta();
-				
-			}
 
+			}
+			if (trace)
+				std::cout << "(" << currpos2 << ")";
 			switch (r.command2)
 			{
 			case L:
@@ -212,8 +217,7 @@ bool DMT::work(bool trace, std::string lenta4)
 				break;
 			}
 			if (trace) {
-				std::cout << "(" << currpos2 << ")";
-				std::cout<<lenta2;
+				std::cout << "   " << lenta2;
 				std::cout << std::endl; std::cout << std::endl;
 			}
 			if (currcond == -1)

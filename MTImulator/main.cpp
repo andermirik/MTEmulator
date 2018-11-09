@@ -11,10 +11,10 @@ void main() {
 	mt.printLenta();*/
 
 	DMT dmt;
-	dmt.readRulesFromFile("dsyscmd.txt");
-	dmt.setAlphabet("ab");
-	dmt.generateRandLenta(9,1);
+	dmt.readRulesFromFile("kz2.txt");
+	dmt.setAlphabet("abc");
+	dmt.generateRandLenta(12,1);
 	dmt.printLenta();
-	dmt.work(true);
+	dmt.work(true,"_abcabcabcabc_");
 	system("pause");
 }

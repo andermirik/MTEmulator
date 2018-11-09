@@ -125,6 +125,7 @@
   </ItemGroup>
   <ItemGroup>
     <Text Include="dsyscmd.txt" />
+    <Text Include="kz2.txt" />
     <Text Include="syscmd1.txt" />
     <Text Include="syscmd2.txt" />
     <Text Include="syscmd3.txt" />
