@@ -34,8 +34,12 @@ public:
 	void printLenta();
 	void printRules();
 	void generateRandLenta(int length, int numSpaces);
+	int moveWrap(Command command, int&pos, bool move);
+	int moveWrapFile(Command command, int&pos, std::ofstream&fout);
 	char randLetterFromAlphabet();
 	bool work(bool trace, std::string lenta4 = "");
+	int workDebugFile(std::string filename, std::string lenta4 = "");
+	void combine(int n, std::string filename, std::string filenamepoints);
 	Rule getNextState(int cst, char csb, char csb2);
 	~DMT();
 };

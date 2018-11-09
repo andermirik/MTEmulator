@@ -145,6 +145,47 @@ void DMT::generateRandLenta(int length, int numSpaces)
 	count_spaces = numSpaces;
 }
 
+int DMT::moveWrap(Command command, int & pos, bool trace=true)
+{
+	switch (command)
+	{
+	case L:
+		pos -= 1;
+		if (trace)
+			std::cout << "L:";
+		return 1;
+	case E:
+		pos = pos;
+		if (trace)
+			std::cout << "E:";
+		return 0;
+	case R:
+		pos += 1;
+		if (trace)
+			std::cout << "R:";
+		return 1;
+	}
+}
+
+int DMT::moveWrapFile(Command command, int & pos, std::ofstream & fout)
+{
+	switch (command)
+	{
+	case L:
+		pos -= 1;
+		fout << "L:";
+		return 1;
+	case E:
+		pos = pos;
+		fout << "E:";
+		return 0;
+	case R:
+		pos += 1;
+		fout << "R:";
+		return 1;
+	}
+}
+
 char DMT::randLetterFromAlphabet()
 {
 	if(alphabet.size())
@@ -174,57 +215,98 @@ bool DMT::work(bool trace, std::string lenta4)
 			lenta2[currpos2] = r.write2;
 			if (trace)
 				std::cout << "(" << currpos << ")";
-			switch (r.command)
-			{
-			case L:
-				currpos -= 1;
-				if (trace)
-					std::cout << "L:";
-				break;
-			case E:
-				currpos = currpos;
-				if (trace)
-					std::cout << "E:";
-				break;
-			case R:
-				currpos += 1;
-				if (trace)
-					std::cout << "R:";
-				break;
-			}
+			moveWrap(r.command, currpos);
 			if (trace) {
 				printLenta();
-
-			}
-			if (trace)
 				std::cout << "(" << currpos2 << ")";
-			switch (r.command2)
-			{
-			case L:
-				currpos2 -= 1;
-				if (trace)
-					std::cout << "L:";
-				break;
-			case E:
-				currpos2 = currpos2;
-				if (trace)
-					std::cout << "E:";
-				break;
-			case R:
-				currpos2 += 1;
-				if (trace)
-					std::cout << "R:";
-				break;
 			}
+			moveWrap(r.command2, currpos2);
 			if (trace) {
 				std::cout << "   " << lenta2;
 				std::cout << std::endl; std::cout << std::endl;
 			}
+
 			if (currcond == -1)
 				return true;
 		}
 		else {
 			return false;
+		}
+	}
+}
+
+int DMT::workDebugFile(std::string filename, std::string lenta4)
+{
+	if (lenta4 != "") {
+		lenta = lenta4;
+		lenta2.clear();
+		for (int i = 0; i < lenta.size(); i++)
+			lenta2.push_back('_');
+	}
+	std::ofstream fout(filename, std::ios::app);
+	fout << "\ninput lenta: " << lenta << std::endl << std::endl;
+	int currpos = count_spaces;
+	int currpos2 = count_spaces;
+	int currcond = 0;
+	int path=0;
+	while (true) {
+		if (currpos < lenta.size() && currpos >= 0 && currpos2 < lenta.size() && currpos >= 0) {
+			
+			fout << "q" << currcond;
+			Rule r = getNextState(currcond, lenta[currpos], lenta2[currpos2]);
+			currcond = r.condition_next;
+			lenta[currpos] = r.write;
+			lenta2[currpos2] = r.write2;
+
+			fout << "(" << currpos << ")";
+			path+=moveWrapFile(r.command, currpos, fout);
+			
+			fout << lenta;
+			fout << std::endl;
+
+			fout << "(" << currpos2 << ")";
+			path+=moveWrapFile(r.command2, currpos2, fout);
+			
+			fout << "   " << lenta2;
+			fout << std::endl; fout << std::endl;
+
+			if (currcond == -1) {
+				fout << "output lenta: " << lenta << std::endl;
+				fout.close();
+				return path;
+			}
+		}
+		else {
+			fout.close();
+			return path;
+		}
+	}
+
+}
+
+void DMT::combine(int length, std::string filename, std::string filenamepoints)
+{
+	//aaa aab aac aba abb abc aca acb acc baa bab bac bba 
+	std::string _lenta;
+	for (int i = 0; i < length+count_spaces*2; i++) {
+		_lenta.push_back('_');
+	}
+	int i = count_spaces;
+	for (; i < length+ count_spaces; ++i)
+		_lenta[i] = 'a';
+	std::ofstream fout(filenamepoints, std::ios::app);
+	for (; ; ) {
+		std::cout << _lenta << std::endl;
+		fout << length<<" "<<workDebugFile(filename, _lenta)<<std::endl;
+		{
+			int pos = length+ count_spaces;
+			char digit = _lenta[--pos];
+			for (; digit == 'c'; digit = _lenta[--pos]) {
+				if (pos == count_spaces)
+					return;
+				_lenta[pos] = 'a';
+			}
+			_lenta[pos] = ++digit;
 		}
 	}
 }
