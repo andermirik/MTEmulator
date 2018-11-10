@@ -10,10 +10,10 @@ void main() {
 		*/
 	MT mt;
 	mt.readRulesFromFile("kz1.txt");
-	mt.generateRandLenta(12, 8);
+	mt.generateRandLenta(12, 5);
 	//проблемы с расширением ленты
 
-	//первый символ узкое место 24E
-		mt.work(true, "________abbb________");
+	
+		mt.work(true, "_____baaa_____");
 	system("pause");
 }
