@@ -181,11 +181,10 @@ int MT::workDebugFile(std::string filename, std::string lenta4)
 	std::ofstream fout(filename, std::ios::app);
 	fout << "\ninput lenta: " << lenta << std::endl << std::endl;
 	int currpos = count_spaces;
-	int currpos2 = count_spaces;
 	int currcond = 0;
 	int path = 0;
 	while (true) {
-		if (currpos < lenta.size() && currpos >= 0 && currpos2 < lenta.size() && currpos >= 0) {
+		if (currpos < lenta.size() && currpos >= 0) {
 
 			fout << "q" << currcond;
 			Rule r = getNextState(currcond, lenta[currpos]);
@@ -233,6 +232,7 @@ void MT::combine(int length, std::string filename, std::string filenamepoints)
 {
 	//aaa aab aac aba abb abc aca acb acc baa bab bac bba 
 	std::string _lenta;
+	count_spaces = length / 4 + 1;
 	for (int i = 0; i < length + count_spaces * 2; i++) {
 		_lenta.push_back('_');
 	}
