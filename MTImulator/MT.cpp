@@ -173,6 +173,89 @@ bool MT::work(bool trace, std::string lenta4)
 	}
 }
 
+int MT::workDebugFile(std::string filename, std::string lenta4)
+{
+	if (lenta4 != "") {
+		lenta = lenta4;
+	}
+	std::ofstream fout(filename, std::ios::app);
+	fout << "\ninput lenta: " << lenta << std::endl << std::endl;
+	int currpos = count_spaces;
+	int currpos2 = count_spaces;
+	int currcond = 0;
+	int path = 0;
+	while (true) {
+		if (currpos < lenta.size() && currpos >= 0 && currpos2 < lenta.size() && currpos >= 0) {
+
+			fout << "q" << currcond;
+			Rule r = getNextState(currcond, lenta[currpos]);
+			currcond = r.condition_next;
+			lenta[currpos] = r.write;
+			fout << "(" << currpos << ")";
+			
+			switch (r.command)
+			{
+			case L:
+				currpos -= 1;
+				path += 1;
+				fout << "L:";
+				break;
+			case E:
+				currpos = currpos;
+				path = path;
+				fout << "E:";
+				break;
+			case R:
+				path += 1;
+				currpos += 1;
+				fout << "R:";
+				break;
+			}
+
+			fout << lenta;
+			fout << std::endl;
+
+			if (currcond == -1) {
+				fout << "output lenta: " << lenta << std::endl;
+				fout.close();
+				return path;
+			}
+		}
+		else {
+			fout.close();
+			return path;
+		}
+	}
+
+}
+
+void MT::combine(int length, std::string filename, std::string filenamepoints)
+{
+	//aaa aab aac aba abb abc aca acb acc baa bab bac bba 
+	std::string _lenta;
+	for (int i = 0; i < length + count_spaces * 2; i++) {
+		_lenta.push_back('_');
+	}
+	int i = count_spaces;
+	for (; i < length + count_spaces; ++i)
+		_lenta[i] = 'a';
+	std::ofstream fout(filenamepoints, std::ios::app);
+	for (; ; ) {
+		std::cout << _lenta << std::endl;
+		fout << length << " " << workDebugFile(filename, _lenta) << std::endl;
+		{
+			int pos = length + count_spaces;
+			char digit = _lenta[--pos];
+			for (; digit == 'c'; digit = _lenta[--pos]) {
+				if (pos == count_spaces)
+					return;
+				_lenta[pos] = 'a';
+			}
+			_lenta[pos] = ++digit;
+		}
+	}
+}
+
 Rule MT::getNextState(int currentState, char currentSymbol)
 {
 	for (int i = 0; i < count_rules; i++) {

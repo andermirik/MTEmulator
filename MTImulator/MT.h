@@ -29,6 +29,8 @@ public:
 	void printLenta();
 	void printRules();
 	bool work(bool trace, std::string lenta4 = "");
+	int workDebugFile(std::string filename, std::string lenta4 = "");
+	void combine(int n, std::string filename, std::string filenamepoints);
 	Rule getNextState(int cst, char csb);
 	MT();
 	~MT();
