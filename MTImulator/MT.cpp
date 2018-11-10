@@ -162,7 +162,7 @@ bool MT::work(bool trace, std::string lenta4)
 			}
 			if (trace) {
 				std::cout << "(" << currpos << ")";
-				printLenta();
+				printLenta(); std::cout << std::endl;
 			}
 			if (currcond == -1)
 				return true;

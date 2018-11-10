@@ -49,5 +49,8 @@
     <Text Include="kz2.txt">
       <Filter>Файлы ресурсов</Filter>
     </Text>
+    <Text Include="kz1.txt">
+      <Filter>Файлы ресурсов</Filter>
+    </Text>
   </ItemGroup>
 </Project>

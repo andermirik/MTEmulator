@@ -11,11 +11,11 @@ DMT::DMT()
 	count_spaces = 1;
 }
 
-void DMT::addRule(int condition, char read, char read2, int condition_next, char write, char write2, Command command, Command command2)
+void DMT::addRule(int condition, char read, char read2, int condition_next, char write, char write2, dmt::Command command, dmt::Command command2)
 {
-	Rule rule = { condition, read, read2, condition_next, write, write2, command, command2 };
+	dmt::Rule rule = { condition, read, read2, condition_next, write, write2, command, command2 };
 
-	Rule*new_rules = new Rule[count_rules + 1];
+	dmt::Rule*new_rules = new dmt::Rule[count_rules + 1];
 	for (int i = 0; i < count_rules; i++) {
 		new_rules[i] = rules[i];
 	}
@@ -25,10 +25,10 @@ void DMT::addRule(int condition, char read, char read2, int condition_next, char
 	count_rules++;
 }
 
-bool DMT::ruleIsExist(int condition, char read, char read2, int condition_next, char write, char write2, Command command, Command command2)
+bool DMT::ruleIsExist(int condition, char read, char read2, int condition_next, char write, char write2, dmt::Command command, dmt::Command command2)
 {
 		for (int i = 0; i < count_rules; i++) {
-			Rule r = rules[i];
+			dmt::Rule r = rules[i];
 			if (r.command == command && r.condition == condition &&
 				r.condition_next == condition_next &&
 				r.read == read && r.write == write &&
@@ -75,8 +75,8 @@ bool DMT::readRulesFromFile(std::string filename)
 				tempCommand >>
 				tempCommand2;
 
-			if (!ruleIsExist(tempCondition, tempRead,tempRead2, tempCondition_next, tempWrite,tempWrite2, (Command)tempCommand, (Command)tempCommand2))
-				addRule(tempCondition, tempRead, tempRead2, tempCondition_next, tempWrite, tempWrite2, (Command)tempCommand, (Command)tempCommand2);
+			if (!ruleIsExist(tempCondition, tempRead,tempRead2, tempCondition_next, tempWrite,tempWrite2, (dmt::Command)tempCommand, (dmt::Command)tempCommand2))
+				addRule(tempCondition, tempRead, tempRead2, tempCondition_next, tempWrite, tempWrite2, (dmt::Command)tempCommand, (dmt::Command)tempCommand2);
 		}
 		fin.close();
 	}
@@ -99,25 +99,25 @@ void DMT::printRules()
 		std::cout << rules[i].condition << " " << rules[i].read<<" "<<rules[i].read2 << " " << rules[i].condition_next << " " << rules[i].write<<" "<<rules[i].write2 << " ";
 		switch (rules[i].command)
 		{
-		case L:
+		case dmt::L:
 			std::cout << "L ";
 			break;
-		case E:
+		case dmt::E:
 			std::cout << "E ";
 			break;
-		case R:
+		case dmt::R:
 			std::cout << "R ";
 			break;
 		}
 		switch (rules[i].command2)
 		{
-		case L:
+		case dmt::L:
 			std::cout << "L";
 			break;
-		case E:
+		case dmt::E:
 			std::cout << "E";
 			break;
-		case R:
+		case dmt::R:
 			std::cout << "R";
 			break;
 		}
@@ -145,21 +145,21 @@ void DMT::generateRandLenta(int length, int numSpaces)
 	count_spaces = numSpaces;
 }
 
-int DMT::moveWrap(Command command, int & pos, bool trace=true)
+int DMT::moveWrap(dmt::Command command, int & pos, bool trace=true)
 {
 	switch (command)
 	{
-	case L:
+	case dmt::L:
 		pos -= 1;
 		if (trace)
 			std::cout << "L:";
 		return 1;
-	case E:
+	case dmt::E:
 		pos = pos;
 		if (trace)
 			std::cout << "E:";
 		return 0;
-	case R:
+	case dmt::R:
 		pos += 1;
 		if (trace)
 			std::cout << "R:";
@@ -167,19 +167,19 @@ int DMT::moveWrap(Command command, int & pos, bool trace=true)
 	}
 }
 
-int DMT::moveWrapFile(Command command, int & pos, std::ofstream & fout)
+int DMT::moveWrapFile(dmt::Command command, int & pos, std::ofstream & fout)
 {
 	switch (command)
 	{
-	case L:
+	case dmt::L:
 		pos -= 1;
 		fout << "L:";
 		return 1;
-	case E:
+	case dmt::E:
 		pos = pos;
 		fout << "E:";
 		return 0;
-	case R:
+	case dmt::R:
 		pos += 1;
 		fout << "R:";
 		return 1;
@@ -209,7 +209,7 @@ bool DMT::work(bool trace, std::string lenta4)
 		if (currpos < lenta.size() && currpos >= 0 && currpos2 < lenta.size() && currpos >= 0) {
 			if (trace)
 				std::cout << "q" << currcond;
-			Rule r = getNextState(currcond, lenta[currpos], lenta2[currpos2]);
+			dmt::Rule r = getNextState(currcond, lenta[currpos], lenta2[currpos2]);
 			currcond = r.condition_next;
 			lenta[currpos] = r.write;
 			lenta2[currpos2] = r.write2;
@@ -253,7 +253,7 @@ int DMT::workDebugFile(std::string filename, std::string lenta4)
 		if (currpos < lenta.size() && currpos >= 0 && currpos2 < lenta.size() && currpos >= 0) {
 			
 			fout << "q" << currcond;
-			Rule r = getNextState(currcond, lenta[currpos], lenta2[currpos2]);
+			dmt::Rule r = getNextState(currcond, lenta[currpos], lenta2[currpos2]);
 			currcond = r.condition_next;
 			lenta[currpos] = r.write;
 			lenta2[currpos2] = r.write2;
@@ -313,7 +313,7 @@ void DMT::combine(int length, std::string filename, std::string filenamepoints)
 
 
 
-Rule DMT::getNextState(int currentState, char currentSymbol, char currentSymbol2)
+dmt::Rule DMT::getNextState(int currentState, char currentSymbol, char currentSymbol2)
 {
 	for (int i = 0; i < count_rules; i++) {
 		if (currentState == rules[i].condition && currentSymbol == rules[i].read && currentSymbol2 == rules[i].read2)
