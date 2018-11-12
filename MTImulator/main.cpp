@@ -44,20 +44,9 @@ void main() {
 	
 	MT mt;
 	mt.readRulesFromFile("kz1.txt");
-	mt.generateRandLenta(12, 5);
+	
+	mt.pointsForGraphic(1, 12);
 
-	mt.work(true, "_____abcabcabcabc_____");
-	/*
-	std::ofstream o("MT/outputMT1-8.txt");
-	o.close();
-	o.open("MT/pointsMT1-8.txt");
-	o.close();
-	/*
-	for(int i=1;i<=8;i++)
-		mt.combine(i, "MT/outputMT1-8.txt", "MT/pointsMT1-8.txt");
-		//*/
-
-	//getPointsFromFile("MT/pointsMT1-8.txt");
 
 	system("pause");
 }

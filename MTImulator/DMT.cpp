@@ -195,9 +195,15 @@ char DMT::randLetterFromAlphabet()
 
 bool DMT::work(bool trace, std::string lenta4)
 {
+	
 	if (lenta4 != "") {
 		lenta = lenta4;
 		lenta2.clear();
+		count_spaces = 1;
+		lenta.insert(0, count_spaces, '_');
+		for (int i = 0; i < count_spaces; i++)
+			lenta.push_back('_');
+		
 		for (int i = 0; i < lenta.size(); i++)
 			lenta2.push_back('_');
 	}
@@ -233,6 +239,7 @@ bool DMT::work(bool trace, std::string lenta4)
 			return false;
 		}
 	}
+	
 }
 
 int DMT::workDebugFile(std::string filename, std::string lenta4)
@@ -240,6 +247,11 @@ int DMT::workDebugFile(std::string filename, std::string lenta4)
 	if (lenta4 != "") {
 		lenta = lenta4;
 		lenta2.clear();
+		count_spaces = 1;
+		lenta.insert(0, count_spaces, '_');
+		for (int i = 0; i < count_spaces; i++)
+			lenta.push_back('_');
+
 		for (int i = 0; i < lenta.size(); i++)
 			lenta2.push_back('_');
 	}
@@ -282,6 +294,97 @@ int DMT::workDebugFile(std::string filename, std::string lenta4)
 		}
 	}
 
+}
+
+int DMT::workForGraphic(std::string lenta4)
+{
+	if (lenta4 != "") {
+		lenta = lenta4;
+		lenta2.clear();
+		/*
+		count_spaces = 1;
+		lenta.insert(0, count_spaces, '_');
+		for (int i = 0; i < count_spaces; i++)
+			lenta.push_back('_');
+		*/
+		for (int i = 0; i < lenta.size(); i++)
+			lenta2.push_back('_');
+	}
+
+	int currpos = count_spaces;
+	int currpos2 = count_spaces;
+	int currcond = 0;
+	int path = 0;
+	while (true) {
+		if (currpos < lenta.size() && currpos >= 0 && currpos2 < lenta2.size() && currpos2 >= 0) {
+
+			dmt::Rule r = getNextState(currcond, lenta[currpos], lenta2[currpos2]);
+			currcond = r.condition_next;
+			lenta[currpos] = r.write;
+			lenta2[currpos2] = r.write2;
+
+			path += moveWrap(r.command, currpos, false);
+
+			path += moveWrap(r.command2, currpos2, false);
+
+			if (currcond == -1) {
+				return path;
+			}
+		}
+		else {
+			return path;
+		}
+	}
+}
+
+void DMT::combineCreateVectorForGraphic(int length, std::vector<std::pair<int, int>>&tp)
+{
+	
+	std::string _lenta;
+	for (int i = 0; i < length + count_spaces * 2; i++) {
+		_lenta.push_back('_');
+	}
+	int i = count_spaces;
+	for (; i < length + count_spaces; ++i)
+		_lenta[i] = 'a';
+	for (; ; ) {
+		tp.push_back(std::pair<int, int>(length, workForGraphic(_lenta)));
+		{
+			int pos = length + count_spaces;
+			char digit = _lenta[--pos];
+			for (; digit == 'c'; digit = _lenta[--pos]) {
+				if (pos == count_spaces)
+					return;
+				_lenta[pos] = 'a';
+			}
+			_lenta[pos] = ++digit;
+		}
+	}
+
+}
+
+void DMT::pointsForGraphic(int l, int r)
+{
+	std::vector<std::pair<int, int>> tp;
+	for (int i = l; i <= r; i++) {
+		combineCreateVectorForGraphic(i, tp);
+	}
+
+	double aveX = 0, Y = 0, n = 0;
+	Y = tp[0].first;
+	for (auto& it : tp) {
+		if (it.first == Y) {
+			aveX += it.second;
+			n++;
+		}
+		else {
+			points.push_back(std::pair<double, double>(Y, aveX / n));
+			Y = it.first;
+			aveX += it.second;
+			n++;
+		}
+	}
+	points.push_back(std::pair<double, double>(Y, aveX / n));
 }
 
 void DMT::combine(int length, std::string filename, std::string filenamepoints)

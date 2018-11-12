@@ -1,6 +1,7 @@
 #pragma once
 #include <iostream>
 #include <string>
+#include <vector>
 namespace dmt {
 	enum Command { L = 'L', E = 'E', R = 'R' };
 	struct Rule
@@ -26,6 +27,7 @@ private:
 	dmt::Rule*rules; 
 	size_t count_rules;
 public:
+	std::vector<std::pair<double, double>> points;
 	DMT();
 	void addRule(int condition, char read, char read2, int condition_next, char write, char write2, dmt::Command command, dmt::Command command2);
 	bool ruleIsExist(int condition, char read, char read2, int condition_next, char write, char write2, dmt::Command command, dmt::Command command2);
@@ -40,6 +42,9 @@ public:
 	char randLetterFromAlphabet();
 	bool work(bool trace, std::string lenta4 = "");
 	int workDebugFile(std::string filename, std::string lenta4 = "");
+	int workForGraphic(std::string lenta4 = "");
+	void combineCreateVectorForGraphic(int n, std::vector<std::pair<int, int>>& tp);
+	void pointsForGraphic(int l, int r);
 	void combine(int n, std::string filename, std::string filenamepoints);
 	dmt::Rule getNextState(int cst, char csb, char csb2);
 	~DMT();

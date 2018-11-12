@@ -256,6 +256,96 @@ void MT::combine(int length, std::string filename, std::string filenamepoints)
 	}
 }
 
+int MT::workForGraphic(std::string lenta4)
+{
+	if (lenta4 != "") {
+		lenta = lenta4;
+	}
+	int currpos = count_spaces;
+	int currcond = 0;
+	int path = 0;
+	while (true) {
+		if (currpos < lenta.size() && currpos >= 0) {
+
+			Rule r = getNextState(currcond, lenta[currpos]);
+			currcond = r.condition_next;
+			lenta[currpos] = r.write;
+
+			switch (r.command)
+			{
+			case L:
+				currpos -= 1;
+				path += 1;
+				break;
+			case E:
+				currpos = currpos;
+				path = path;
+				break;
+			case R:
+				path += 1;
+				currpos += 1;
+				break;
+			}
+			if (currcond == -1) {
+				return path;
+			}
+		}
+		else {
+			return path;
+		}
+	}
+}
+
+void MT::combineCreateVectorForGraphic(int length, std::vector<std::pair<int, int>>& tp)
+{
+	std::string _lenta;
+	count_spaces = length / 4 + 2;
+	for (int i = 0; i < length + count_spaces * 2; i++) {
+		_lenta.push_back('_');
+	}
+	int i = count_spaces;
+	for (; i < length + count_spaces; ++i)
+		_lenta[i] = 'a';
+	for (; ; ) {
+		tp.push_back(std::pair<int, int>(length, workForGraphic(_lenta)));
+		{
+			int pos = length + count_spaces;
+			char digit = _lenta[--pos];
+			for (; digit == 'c'; digit = _lenta[--pos]) {
+				if (pos == count_spaces)
+					return;
+				_lenta[pos] = 'a';
+			}
+			_lenta[pos] = ++digit;
+		}
+	}
+
+}
+
+void MT::pointsForGraphic(int l, int r)
+{
+	std::vector<std::pair<int, int>> tp;
+	for (int i = l; i <= r; i++) {
+		combineCreateVectorForGraphic(i, tp);
+	}
+
+	double aveX = 0, Y = 0, n = 0;
+	Y = tp[0].first;
+	for (auto& it : tp) {
+		if (it.first == Y) {
+			aveX += it.second;
+			n++;
+		}
+		else {
+			points.push_back(std::pair<double, double>(Y, aveX / n));
+			Y = it.first;
+			aveX += it.second;
+			n++;
+		}
+	}
+	points.push_back(std::pair<double, double>(Y, aveX / n));
+}
+
 Rule MT::getNextState(int currentState, char currentSymbol)
 {
 	for (int i = 0; i < count_rules; i++) {
