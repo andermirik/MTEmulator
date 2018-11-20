@@ -2,7 +2,7 @@
 
 	DMT dmt;
 	dmt.readRulesFromFile("kz2.txt");
-  dmt.work("_abcabcabccabc_");
+  	dmt.work("_abcabcabccabc_");
 
 kz2.txt содержит задание: да если слово состоит из 4 подинаковых подслов. Нет иначе.
 формат ввода комманд:
